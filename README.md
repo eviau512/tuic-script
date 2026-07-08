@@ -4,7 +4,7 @@ An one-click Tuic script based upon Misaka🍥 の tuic-script
 
 - EN translated
 - self-assign certification added
-- TLS certificate (PEM) will be shown after config
+- TLS certificate (PEM) will be shown after config for latest Xray users (with no certificate not allowed)
 
 ## Deploy
 
