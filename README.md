@@ -1,6 +1,10 @@
 # tuic script
 
-An one-click Tuic deploy script
+An one-click Tuic script based upon Misaka🍥 の tuic-script
+
+- EN translated
+- self-assign certification added
+- TLS certificate (PEM) will be shown after config
 
 ## Deploy
 
