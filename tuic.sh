@@ -143,21 +143,29 @@ tuic_cert(){
     green "TUIC certificate setup options:"
     echo ""
     echo -e " ${GREEN}1.${PLAIN} Automatic self-signed certificate ${YELLOW}(recommended for VPSs without a domain)${PLAIN}"
-    echo -e " ${GREEN}2.${PLAIN} ACME certificate with a domain"
-    echo -e " ${GREEN}3.${PLAIN} Custom certificate path"
+    echo -e " ${GREEN}2.${PLAIN} Bing self-signed certificate"
+    echo -e " ${GREEN}3.${PLAIN} ACME certificate with a domain"
+    echo -e " ${GREEN}4.${PLAIN} Custom certificate path"
     echo ""
-    read -rp "Please choose an option [1-3] [1]: " certInput
+    read -rp "Please choose an option [1-4] [1]: " certInput
     certInput=${certInput:-1}
 
-    if [[ $certInput == 3 ]]; then
-        read -rp "Enter the path to the certificate file (crt): " cert_path
-        yellow "Certificate file path: $cert_path"
-        read -rp "Enter the path to the private key file (key): " key_path
-        yellow "Private key file path: $key_path"
-        read -rp "Enter the certificate domain or IP: " domain
-        [[ -z $domain ]] && domain="$ip"
-        yellow "Certificate identity: $domain"
+    if [[ $certInput == 1 ]]; then
+        tuic_self_signed_cert
+        finaldomain="$domain"
+        snidomain="$domain"
     elif [[ $certInput == 2 ]]; then
+        cert_path="/root/bing/cert.crt"
+        key_path="/root/bing/private.key"
+        domain="www.bing.com"
+        mkdir -p /root/bing
+
+        openssl ecparam -genkey -name prime256v1 -out "$key_path"
+        openssl req -new -x509 -days 36500 -key "$key_path" -out "$cert_path" -subj "/CN=www.bing.com"
+
+        finaldomain="$ip"
+        snidomain="$domain"
+    elif [[ $certInput == 3 ]]; then
         cert_path="/root/cert.crt"
         key_path="/root/private.key"
         if [[ -f /root/cert.crt && -f /root/private.key ]] && [[ -s /root/cert.crt && -s /root/private.key ]] && [[ -f /root/ca.log ]]; then
@@ -240,12 +248,23 @@ tuic_cert(){
                 yellow "3. The script may be outdated. Consider sharing a screenshot in the GitHub Issues, GitLab Issues, forums, or Telegram groups for help."
             fi
         fi
+        finaldomain="$domain"
+        snidomain="$domain"
+    elif [[ $certInput == 4 ]]; then
+        read -rp "Enter the path to the certificate file (crt): " cert_path
+        yellow "Certificate file path: $cert_path"
+        read -rp "Enter the path to the private key file (key): " key_path
+        yellow "Private key file path: $key_path"
+        read -rp "Enter the certificate domain or IP: " domain
+        [[ -z $domain ]] && domain="$ip"
+        yellow "Certificate identity: $domain"
+        finaldomain="$domain"
+        snidomain="$domain"
     else
         tuic_self_signed_cert
+        finaldomain="$domain"
+        snidomain="$domain"
     fi
-
-    finaldomain="$domain"
-    snidomain="$domain"
 }
 
 tuic_port(){
