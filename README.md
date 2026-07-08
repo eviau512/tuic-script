@@ -7,7 +7,7 @@ An one-click Tuic deploy script
 ### tuic V4 + V5
 
 ```shell
-wget -N --no-check-certificate https://gitlab.com/Misaka-blog/tuic-script/-/raw/main/tuic.sh && bash tuic.sh
+wget -N https://raw.githubusercontent.com/eviau512/tuic-script/refs/heads/main/tuic.sh && bash tuic.sh
 ```
 
 ## Support Original author
